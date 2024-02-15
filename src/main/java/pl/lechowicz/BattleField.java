@@ -15,6 +15,10 @@ public class BattleField {
 
         private int length;
 
+        public int getLength() {
+            return length;
+        }
+
         Ship(int length) {
             this.length = length;
         }
@@ -26,6 +30,11 @@ public class BattleField {
         availableShips.put(Ship.CRUISER, 2);
         availableShips.put(Ship.DESTROYER, 3);
         availableShips.put(Ship.SUBMARINE, 4);
+
+        Map<Integer, Ship> allShips = new HashMap<>();
+        Arrays.stream(Ship.values())
+                .forEach(ship -> allShips.put(ship.getLength(), ship));
+
 
         int sum = 0;
 
@@ -93,22 +102,12 @@ public class BattleField {
                 }
 
                 if(possibleShip > 0) {
-                    switch(possibleShip) {
-                        case 1:
-                            checkShip(availableShips, Ship.SUBMARINE);
-                            break;
-                        case 2:
-                            checkShip(availableShips, Ship.DESTROYER);
-                            break;
-                        case 3:
-                            checkShip(availableShips, Ship.CRUISER);
-                            break;
-                        case 4:
-                            checkShip(availableShips, Ship.BATTLESHIP);
-                            break;
-                        default:
-                            return false;
+                    if (allShips.containsKey(possibleShip)) {
+                        checkShip(availableShips, allShips.get(possibleShip));
+                    } else {
+                       return false;
                     }
+
                     possibleShip = 0;
                     if(nextPointAfterShip != null) {
                         x = nextPointAfterShip.x;
