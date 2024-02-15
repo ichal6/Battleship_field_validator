@@ -76,21 +76,10 @@ public class BattleField {
             }
         }
 
-        for (int value : availableShips.values()) {
-            if(value != 0) {
-                availableShips.forEach((key, v) -> System.out.println(key + ":" + v));
-                for(int i = 0; i < SIZE; i++) {
-                    for(int j = 0; j < SIZE; j++)
-                        System.out.print(field[i][j]);
-                    System.out.println();
-                }
-                return false;
+        boolean allShipsArePlaced = availableShips.values().stream()
+                .anyMatch(value -> value != 0);
 
-            }
-        }
-
-
-        return true;
+        return !allShipsArePlaced;
     }
 
     private static Optional<Point> calculateNextPointAfterFinishCheckShip(int x, int y) {
