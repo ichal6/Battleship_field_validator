@@ -7,9 +7,9 @@ public class BattleField {
     private static final int SIZE_FIELD = 100;
     private static final int SIZE = 10;
 
-    private static record Point(int x, int y) {};
+    private record Point(int x, int y) {};
 
-    private static enum Ship {
+    private enum Ship {
         BATTLESHIP(4), CRUISER(3), DESTROYER(2), SUBMARINE(1);
 
         private final int length;
