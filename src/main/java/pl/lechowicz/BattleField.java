@@ -30,7 +30,7 @@ public class BattleField {
         if(getLengthOfAllShipsOnBoard(field) != getSumOfAllShips(availableShips))
             return false;
 
-        List<Point> checkedPoints = new ArrayList<>();
+        Set<Point> checkedPoints = new HashSet<>();
 
         int x = 0, y = 0;
         int possibleShip = 0;
