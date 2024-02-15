@@ -1,7 +1,6 @@
 package pl.lechowicz;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BattleField {
     private static final int SIZE_FIELD = 100;
@@ -52,7 +51,8 @@ public class BattleField {
                 if(shipIsPlaceInHorizontal(x, field[y])) {
                     x++;
                 } else if(shipIsPlaceInVertical(field, y, x)) {
-                    nextPointAfterShip = calculateNextPointAfterFinishCheckShip(nextPointAfterShip, x, y);
+                    if(nextPointAfterShip.isEmpty())
+                        nextPointAfterShip = calculateNextPointAfterFinishCheckShip(x, y);
                     y++;
                 } else if(possibleShipLength > 0) {
                     if (allShips.containsKey(possibleShipLength)) {
@@ -93,14 +93,14 @@ public class BattleField {
         return true;
     }
 
-    private static Optional<Point> calculateNextPointAfterFinishCheckShip(Optional<Point> nextPointAfterShip, int x, int y) {
-        if(nextPointAfterShip.isEmpty()) {
-            if(x + 1 < SIZE)
-                nextPointAfterShip = Optional.of(new Point(x + 1, y));
-            else {
-                nextPointAfterShip = Optional.of(new Point(0, y + 1));
-            }
+    private static Optional<Point> calculateNextPointAfterFinishCheckShip(int x, int y) {
+        Optional<Point> nextPointAfterShip;
+        if(x + 1 < SIZE)
+            nextPointAfterShip = Optional.of(new Point(x + 1, y));
+        else {
+            nextPointAfterShip = Optional.of(new Point(0, y + 1));
         }
+
         return nextPointAfterShip;
     }
 
