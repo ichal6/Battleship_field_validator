@@ -44,29 +44,9 @@ public class BattleField {
                 checkedPoints.add(actualPoint);
             }
             if(field[y][x] == 1 && !isChecked) {
-                if(x+1 < SIZE && y+1 < SIZE && field[y+1][x+1] == 1) {
+                if(checkContactShipByEdge(field, x, y))
                     return false;
-                }
-                if(x-1 >= 0 && y+1 < SIZE && field[y+1][x-1] == 1) {
-                    return false;
-                }
-                if(x-1 >= 0 && y-1 >= 0 && field[y-1][x-1] == 1) {
-                    return false;
-                }
-                if(x+1 > SIZE && y-1 >= 0 && field[y-1][x+1] == 1) {
-                    return false;
-                }
-
-//                if((x+1 < SIZE && field[y][x+1] == 1) && (y+1 < SIZE && field[y+1][x] == 1)) {
-//                    return false;
-//                }
-//                if(x-1 > 0 && y-1 > 0 && field[y-1][x-1] == 1) {
-//                    return false;
-//                }
-//                if((x-1 > 0 && field[y][x-1] == 1) && (y+1 < SIZE && field[y+1][x] == 1)) {
-//                    return false;
-//                }
-
+                
                 possibleShip++;
 
                 if(x+1 < SIZE && field[y][x+1] == 1) {
@@ -107,8 +87,6 @@ public class BattleField {
             } else if(y+1 < SIZE) {
                 x = 0;
                 y++;
-            } else {
-                break;
             }
         }
 
@@ -131,6 +109,29 @@ public class BattleField {
 
 
         return true;
+    }
+
+    private static boolean checkContactShipByEdge(int[][] field, int x, int y) {
+        return checkRightBottomArea(field, x, y) ||
+                checkLeftBottomArea(field, x, y) ||
+                checkLeftTopArea(field, x, y) ||
+                checkRightTopArea(field, x, y);
+    }
+
+    private static boolean checkRightTopArea(int[][] field, int x, int y) {
+        return x + 1 > SIZE && y - 1 >= 0 && field[y - 1][x + 1] == 1;
+    }
+
+    private static boolean checkLeftTopArea(int[][] field, int x, int y) {
+        return x - 1 >= 0 && y - 1 >= 0 && field[y - 1][x - 1] == 1;
+    }
+
+    private static boolean checkLeftBottomArea(int[][] field, int x, int y) {
+        return x - 1 >= 0 && y + 1 < SIZE && field[y + 1][x - 1] == 1;
+    }
+
+    private static boolean checkRightBottomArea(int[][] field, int x, int y) {
+        return x + 1 < SIZE && y + 1 < SIZE && field[y + 1][x + 1] == 1;
     }
 
     private static int getSumOfAllShips(Map<Ship, Integer> availableShips) {
