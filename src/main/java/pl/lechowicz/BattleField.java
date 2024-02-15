@@ -7,7 +7,7 @@ public class BattleField {
     private static final int SIZE_FIELD = 100;
     private static final int SIZE = 10;
 
-    private record Point(int x, int y) {};
+    private record Point(int x, int y) {}
 
     private enum Ship {
         BATTLESHIP(4), CRUISER(3), DESTROYER(2), SUBMARINE(1);
@@ -34,7 +34,7 @@ public class BattleField {
 
         int x = 0, y = 0;
         int possibleShip = 0;
-        Point nextPointAfterShip = null;
+        Optional<Point> nextPointAfterShip = Optional.empty();
         while(checkedPoints.size() < SIZE_FIELD) {
             var actualPoint = new Point(x, y);
             boolean isChecked = false;
@@ -75,11 +75,11 @@ public class BattleField {
                 }
 
                 if(y+1 < SIZE && field[y+1][x] == 1) {
-                    if(nextPointAfterShip == null) {
+                    if(nextPointAfterShip.isEmpty()) {
                         if(x + 1 < SIZE)
-                            nextPointAfterShip = new Point(x+1, y);
+                            nextPointAfterShip = Optional.of(new Point(x + 1, y));
                         else {
-                            nextPointAfterShip = new Point(0, y+1);
+                            nextPointAfterShip = Optional.of(new Point(0, y + 1));
                         }
                     }
                     y++;
@@ -94,10 +94,10 @@ public class BattleField {
                     }
 
                     possibleShip = 0;
-                    if(nextPointAfterShip != null) {
-                        x = nextPointAfterShip.x;
-                        y = nextPointAfterShip.y;
-                        nextPointAfterShip = null;
+                    if(nextPointAfterShip.isPresent()) {
+                        x = nextPointAfterShip.get().x;
+                        y = nextPointAfterShip.get().y;
+                        nextPointAfterShip = Optional.empty();
                         continue;
                     }
                 }
