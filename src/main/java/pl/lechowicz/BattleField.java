@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 public class BattleField {
     private static final int SIZE_FIELD = 100;
     private static final int SIZE = 10;
-    private static final Map<Ship, Integer> availableShips = new HashMap<>();
 
 
     private static record Point(int x, int y) {};
@@ -22,7 +21,7 @@ public class BattleField {
     }
 
     public static boolean fieldValidator(int[][] field) {
-        availableShips.clear();
+        Map<Ship, Integer> availableShips = new HashMap<>();
         availableShips.put(Ship.BATTLESHIP, 1);
         availableShips.put(Ship.CRUISER, 2);
         availableShips.put(Ship.DESTROYER, 3);
@@ -96,16 +95,16 @@ public class BattleField {
                 if(possibleShip > 0) {
                     switch(possibleShip) {
                         case 1:
-                            checkShip(Ship.SUBMARINE);
+                            checkShip(availableShips, Ship.SUBMARINE);
                             break;
                         case 2:
-                            checkShip(Ship.DESTROYER);
+                            checkShip(availableShips, Ship.DESTROYER);
                             break;
                         case 3:
-                            checkShip(Ship.CRUISER);
+                            checkShip(availableShips, Ship.CRUISER);
                             break;
                         case 4:
-                            checkShip(Ship.BATTLESHIP);
+                            checkShip(availableShips, Ship.BATTLESHIP);
                             break;
                         default:
                             return false;
@@ -149,11 +148,10 @@ public class BattleField {
 
         return true;
     }
-    private static void checkShip(Ship ship) {
+    private static void checkShip(Map<Ship, Integer> availableShips, Ship ship) {
         int count = availableShips.get(ship);
 
-        if(count != 0) {
+        if(count != 0)
             availableShips.put(ship, count-1);
-        }
     }
 }
