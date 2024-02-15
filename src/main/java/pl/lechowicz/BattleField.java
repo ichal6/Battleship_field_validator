@@ -25,16 +25,8 @@ public class BattleField {
     }
 
     public static boolean fieldValidator(int[][] field) {
-        Map<Ship, Integer> availableShips = new HashMap<>();
-        availableShips.put(Ship.BATTLESHIP, 1);
-        availableShips.put(Ship.CRUISER, 2);
-        availableShips.put(Ship.DESTROYER, 3);
-        availableShips.put(Ship.SUBMARINE, 4);
-
-        Map<Integer, Ship> allShips = new HashMap<>();
-        Arrays.stream(Ship.values())
-                .forEach(ship -> allShips.put(ship.getLength(), ship));
-
+        Map<Ship, Integer> availableShips = createAvailableShipsMap();
+        Map<Integer, Ship> allShips = createMapWithLengthOfShips();
 
         int sum = 0;
 
@@ -147,6 +139,23 @@ public class BattleField {
 
         return true;
     }
+
+    private static Map<Integer, Ship> createMapWithLengthOfShips() {
+        Map<Integer, Ship> allShips = new HashMap<>();
+        Arrays.stream(Ship.values())
+                .forEach(ship -> allShips.put(ship.getLength(), ship));
+        return allShips;
+    }
+
+    private static Map<Ship, Integer> createAvailableShipsMap() {
+        Map<Ship, Integer> availableShips = new HashMap<>();
+        availableShips.put(Ship.BATTLESHIP, 1);
+        availableShips.put(Ship.CRUISER, 2);
+        availableShips.put(Ship.DESTROYER, 3);
+        availableShips.put(Ship.SUBMARINE, 4);
+        return availableShips;
+    }
+
     private static void checkShip(Map<Ship, Integer> availableShips, Ship ship) {
         int count = availableShips.get(ship);
 
