@@ -7,13 +7,12 @@ public class BattleField {
     private static final int SIZE_FIELD = 100;
     private static final int SIZE = 10;
 
-
     private static record Point(int x, int y) {};
 
     private static enum Ship {
         BATTLESHIP(4), CRUISER(3), DESTROYER(2), SUBMARINE(1);
 
-        private int length;
+        private final int length;
 
         public int getLength() {
             return length;
@@ -28,13 +27,7 @@ public class BattleField {
         Map<Ship, Integer> availableShips = createAvailableShipsMap();
         Map<Integer, Ship> allShips = createMapWithLengthOfShips();
 
-        int sum = 0;
-
-        for(int i = 0; i < SIZE; i++)
-            for(int j = 0; j < SIZE; j++)
-                sum += field[i][j];
-
-        if(sum != 20)
+        if(getLengthOfAllShipsOnBoard(field) != getSumOfAllShips(availableShips))
             return false;
 
         List<Point> checkedPoints = new ArrayList<>();
@@ -140,6 +133,18 @@ public class BattleField {
         return true;
     }
 
+    private static int getSumOfAllShips(Map<Ship, Integer> availableShips) {
+        return availableShips.entrySet().stream()
+                .mapToInt(entry -> entry.getKey().getLength() * entry.getValue())
+                .sum();
+    }
+
+    private static int getLengthOfAllShipsOnBoard(int[][] field) {
+        return Arrays.stream(field)
+                .flatMapToInt(Arrays::stream)
+                .sum();
+    }
+
     private static Map<Integer, Ship> createMapWithLengthOfShips() {
         Map<Integer, Ship> allShips = new HashMap<>();
         Arrays.stream(Ship.values())
@@ -158,7 +163,6 @@ public class BattleField {
 
     private static void checkShip(Map<Ship, Integer> availableShips, Ship ship) {
         int count = availableShips.get(ship);
-
         if(count != 0)
             availableShips.put(ship, count-1);
     }
