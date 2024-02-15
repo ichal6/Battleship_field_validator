@@ -33,7 +33,7 @@ public class BattleField {
         Set<Point> checkedPoints = new HashSet<>();
 
         int x = 0, y = 0;
-        int possibleShip = 0;
+        int possibleShipLength = 0;
         Optional<Point> nextPointAfterShip = Optional.empty();
         while(checkedPoints.size() < SIZE_FIELD) {
             var actualPoint = new Point(x, y);
@@ -47,52 +47,34 @@ public class BattleField {
                 if(checkContactShipByEdge(field, x, y))
                     return false;
                 
-                possibleShip++;
+                possibleShipLength++;
 
-                if(x+1 < SIZE && field[y][x+1] == 1) {
+                if(shipIsPlaceInHorizontal(x, field[y])) {
                     x++;
-                    continue;
-                }
-
-                if(y+1 < SIZE && field[y+1][x] == 1) {
-                    if(nextPointAfterShip.isEmpty()) {
-                        if(x + 1 < SIZE)
-                            nextPointAfterShip = Optional.of(new Point(x + 1, y));
-                        else {
-                            nextPointAfterShip = Optional.of(new Point(0, y + 1));
-                        }
-                    }
+                } else if(shipIsPlaceInVertical(field, y, x)) {
+                    nextPointAfterShip = calculateNextPointAfterFinishCheckShip(nextPointAfterShip, x, y);
                     y++;
-                    continue;
-                }
-
-                if(possibleShip > 0) {
-                    if (allShips.containsKey(possibleShip)) {
-                        checkShip(availableShips, allShips.get(possibleShip));
+                } else if(possibleShipLength > 0) {
+                    if (allShips.containsKey(possibleShipLength)) {
+                        checkShip(availableShips, allShips.get(possibleShipLength));
                     } else {
                        return false;
                     }
 
-                    possibleShip = 0;
+                    possibleShipLength = 0;
                     if(nextPointAfterShip.isPresent()) {
                         x = nextPointAfterShip.get().x;
                         y = nextPointAfterShip.get().y;
                         nextPointAfterShip = Optional.empty();
-                        continue;
                     }
                 }
-            }
-            if(x+1 < SIZE) {
+            } else if(x+1 < SIZE) {
                 x++;
             } else if(y+1 < SIZE) {
                 x = 0;
                 y++;
             }
         }
-
-        Set<Point> collect = checkedPoints.stream().filter(i -> Collections.frequency(checkedPoints, i) > 1).collect(Collectors.toUnmodifiableSet());
-
-        System.out.println(collect);
 
         for (int value : availableShips.values()) {
             if(value != 0) {
@@ -109,6 +91,25 @@ public class BattleField {
 
 
         return true;
+    }
+
+    private static Optional<Point> calculateNextPointAfterFinishCheckShip(Optional<Point> nextPointAfterShip, int x, int y) {
+        if(nextPointAfterShip.isEmpty()) {
+            if(x + 1 < SIZE)
+                nextPointAfterShip = Optional.of(new Point(x + 1, y));
+            else {
+                nextPointAfterShip = Optional.of(new Point(0, y + 1));
+            }
+        }
+        return nextPointAfterShip;
+    }
+
+    private static boolean shipIsPlaceInVertical(int[][] field, int y, int x) {
+        return y + 1 < SIZE && field[y + 1][x] == 1;
+    }
+
+    private static boolean shipIsPlaceInHorizontal(int x, int[] field) {
+        return x + 1 < SIZE && field[x + 1] == 1;
     }
 
     private static boolean checkContactShipByEdge(int[][] field, int x, int y) {
